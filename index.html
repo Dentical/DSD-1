@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSD I Masterclass | Digitale Lernplattform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #3b82f6;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --radius: 12px;
+            --shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: var(--surface);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .logo {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            background: #eff6ff;
+            padding: 6px;
+            border-radius: 8px;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+
+        nav a:hover { color: var(--primary); }
+
+        .user-chip {
+            background: #f1f5f9;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary);
+        }
+
+        .user-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15);
+        }
+
+        .btn:hover { transform: translateY(-2px); opacity: 0.95; }
+        .btn-secondary { background-color: #cbd5e1; color: var(--text); box-shadow: none; }
+        .btn-success { background-color: var(--success); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15); }
+        .btn-accent { background-color: var(--accent); color: #fff; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15); }
+
+        main {
+            flex: 1;
+            padding: 2.5rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, #1e40af 100%);
+            color: white;
+            padding: 3rem;
+            border-radius: 20px;
+            margin-bottom: 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            box-shadow: 0 10px 30px rgba(30, 58, 138, 0.2);
+        }
+
+        .hero h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 8px; }
+        .hero p { opacity: 0.85; font-size: 1.05rem; }
+
+        .countdown-badge {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
+            padding: 12px 20px;
+            border-radius: var(--radius);
+            font-weight: 700;
+            font-size: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 24px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            width: fit-content;
+            text-transform: uppercase;
+        }
+        .badge.free { background: #d1fae5; color: #065f46; }
+        .badge.locked { background: #fef3c7; color: #92400e; }
+
+        .audio-container {
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border: 1px solid var(--border);
+        }
+        audio { width: 100%; height: 36px; }
+
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2.5rem;
+            border-left: 6px solid var(--primary-light);
+            overflow-x: auto;
+        }
+        .panel.teacher { border-left-color: var(--success); }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            min-width: 550px;
+        }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border); }
+        th { background-color: #f8fafc; color: var(--text-muted); font-weight: 700; }
+
+        .board {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            border: 1px solid #fde68a;
+            padding: 25px;
+            border-radius: var(--radius);
+            margin-bottom: 2.5rem;
+        }
+        .board-msg {
+            background: white;
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-top: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            font-size: 0.95rem;
+            border-left: 4px solid var(--accent);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+        }
+        .modal-content {
+            background: var(--surface);
+            padding: 35px;
+            width: 100%;
+            max-width: 440px;
+            border-radius: 20px;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        .close {
+            position: absolute; right: 20px; top: 20px;
+            font-size: 1.5rem; cursor: pointer; color: var(--text-muted);
+        }
+
+        .tab-switcher {
+            display: flex; background: #f1f5f9; padding: 4px; border-radius: 10px; margin-bottom: 20px;
+        }
+        .tab-btn {
+            flex: 1; padding: 10px; background: transparent; border: none; font-weight: 700;
+            color: var(--text-muted); border-radius: 8px; cursor: pointer; transition: all 0.2s;
+        }
+        .tab-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.85rem; color: var(--text-muted); }
+        .form-group input, .form-group select {
+            width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 0.95rem; background: #f8fafc;
+        }
+        .form-group input:focus { outline: 2px solid var(--primary-light); background: white; }
+
+        footer { text-align: center; padding: 2rem; background: var(--surface); border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.85rem; }
+
+        @media(max-width: 768px) {
+            .hero { padding: 2rem 1.5rem; text-align: center; justify-content: center; }
+            header { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo"><span>🇩🇪</span> DSD I Master</div>
+        <nav>
+            <a href="#board">Brett</a>
+            <a href="#audioSection">Hörverstehen</a>
+            <a href="#redemittelSection">Redemittel</a>
+            <a href="#trainer">Trainer</a>
+            <a href="#library">Materialien</a>
+            <div id="authArea">
+                <button class="btn" onclick="openModal('authModal')">Anmelden</button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div>
+                <h1>Dein Weg zum DSD I B1-Diplom</h1>
+                <p>Professionelles Training für Lesen, Hören, Schreiben und Sprechen.</p>
+            </div>
+            <div class="countdown-badge" id="examCountdown">⏳ Lade Countdown...</div>
+        </section>
+
+        <section id="board" class="board">
+            <h3 style="color: #92400e; font-weight: 800; margin-bottom: 10px;">📌 Schwarzes Brett (Ankündigungen)</h3>
+            <div id="boardMessages">
+                <div class="board-msg"><b>Admin:</b> Willkommen auf der Plattform!</div>
+            </div>
+            <div id="boardAdminControls" style="margin-top: 15px; display: none; gap: 10px;">
+                <input type="text" id="newAnnouncement" placeholder="Neue Mitteilung..." style="padding: 10px; flex: 1; border: 1px solid #fde68a; border-radius: 8px;">
+                <button class="btn btn-accent" onclick="postAnnouncement()">Veröffentlichen</button>
+            </div>
+        </section>
+
+        <div id="adminSection" style="display: none;" class="panel">
+            <h2 class="section-title">👑 Admin Control Center</h2>
+            <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                <input type="text" id="teacherNameInput" placeholder="Name des Lehrers" style="padding: 10px; flex: 1; border: 1px solid var(--border); border-radius: 8px;">
+                <button class="btn" onclick="createTeacherCode()">Lehrer-Code erstellen</button>
+            </div>
+            <h3 style="font-size: 1.1rem; margin-bottom: 10px;">Benutzer & Vertrauliche Kontaktdaten</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Avatar</th>
+                        <th>Name & E-Mail</th>
+                        <th>Rolle</th>
+                        <th>Niveau</th>
+                        <th>Telefon</th>
+                        <th>Aktion</th>
+                    </tr>
+                </thead>
+                <tbody id="adminUsersTableBody"></tbody>
+            </table>
+        </div>
+
+        <div id="teacherSection" style="display: none;" class="panel teacher">
+            <h2 class="section-title" style="color: var(--success);">📚 Lehrer-Bereich</h2>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <input type="text" id="studentGroupNameInput" placeholder="Klasse (z.B. 9B)" style="padding: 10px; flex: 1; border: 1px solid var(--border); border-radius: 8px;">
+                <button class="btn btn-success" onclick="createStudentCode()">Schüler-Code generieren</button>
+            </div>
+        </div>
+
+        <section id="audioSection">
+            <h2 class="section-title">🎧 Hörverstehen (Prüfungstraining)</h2>
+            <div class="grid">
+                <div class="card">
+                    <div>
+                        <span class="badge free">Teil 1</span>
+                        <h3 style="font-size: 1.1rem; margin-bottom: 5px;">Interview zum Alltag</h3>
+                        <div class="audio-container">
+                            <audio controls><source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mp3"></audio>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <span class="badge free">Teil 2</span>
+                        <h3 style="font-size: 1.1rem; margin-bottom: 5px;">Umfrage in der Stadt</h3>
+                        <div class="audio-container">
+                            <audio controls><source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mp3"></audio>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="redemittelSection" class="panel" style="border-left-color: var(--accent);">
+            <h2 class="section-title">🗣️ Redemittel für die Mündliche Prüfung</h2>
+            <p>Nutze diese Phrasen für deine Präsentation.</p>
+        </section>
+
+        <section id="trainer" class="card" style="margin-bottom: 3rem;">
+            <h2 class="section-title">✍️ Mini-Prüfungstrainer (Lesen)</h2>
+            <p style="font-weight: 600; margin-bottom: 15px;">Frage: Was bedeutet „DSD“?</p>
+            <div class="quiz-option" onclick="checkQuiz(this, false)" style="padding: 12px; background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px; cursor: pointer;">A) Deutsches Sport Diplom</div>
+            <div class="quiz-option" onclick="checkQuiz(this, true)" style="padding: 12px; background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; cursor: pointer;">B) Deutsches Sprachdiplom</div>
+            <p id="quizResult" style="margin-top: 12px; font-weight: 700;"></p>
+        </section>
+
+        <section id="library">
+            <h2 class="section-title">📚 Bibliothek & Ressourcen</h2>
+            <div class="grid">
+                <div class="card">
+                    <div>
+                        <span class="badge free">Frei zugänglich</span>
+                        <h3>Wortschatz-Liste B1</h3>
+                    </div>
+                    <button class="btn" style="margin-top: 15px;" onclick="alert('Öffne Vokabeln...')">Öffnen</button>
+                </div>
+                <div class="card">
+                    <div>
+                        <span class="badge locked" id="badge1">Nur für Schüler</span>
+                        <h3>Modelltests</h3>
+                    </div>
+                    <button class="btn btn-secondary" id="btnBook1" style="margin-top: 15px;" disabled>Gesperrt</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('authModal')">&times;</span>
+            <div class="tab-switcher">
+                <button class="tab-btn active" onclick="switchTab('login')">Anmelden</button>
+                <button class="tab-btn" onclick="switchTab('register')">Registrieren</button>
+            </div>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group"><label>E-Mail</label><input type="email" id="loginEmail" value="samirdv888@gmail.com" required></div>
+                <div class="form-group"><label>Passwort</label><input type="password" id="loginPassword" value="Samir915900009" required></div>
+                <button type="submit" class="btn" style="width: 100%;">Einloggen</button>
+            </form>
+            <form id="registerForm" style="display: none;" onsubmit="handleRegister(event)">
+                <div class="form-group"><label>Vorname</label><input type="text" id="regName" required></div>
+                <div class="form-group"><label>Nachname</label><input type="text" id="regSurname" required></div>
+                <div class="form-group"><label>Telefonnummer</label><input type="tel" id="regPhone" required></div>
+                <div class="form-group"><label>Einladungscode</label><input type="text" id="regCode" required></div>
+                <div class="form-group"><label>E-Mail</label><input type="email" id="regEmail" required></div>
+                <div class="form-group"><label>Passwort</label><input type="password" id="regPassword" required></div>
+                <button type="submit" class="btn btn-success" style="width: 100%;">Konto erstellen</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="editUserModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('editUserModal')">&times;</span>
+            <h2 style="font-size: 1.3rem; margin-bottom: 15px;">Benutzerprofil bearbeiten</h2>
+            <form id="editUserForm" onsubmit="saveUserChanges(event)">
+                <input type="hidden" id="editUserEmail">
+                <div class="form-group"><label>Vorname</label><input type="text" id="editName" required></div>
+                <div class="form-group"><label>Nachname</label><input type="text" id="editSurname" required></div>
+                <div class="form-group"><label>Telefon</label><input type="tel" id="editPhone" required></div>
+                <div class="form-group">
+                    <label>Niveau</label>
+                    <select id="editLevel">
+                        <option value="A2">A2</option>
+                        <option value="B1.1">B1.1</option>
+                        <option value="B1.2">B1.2</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Avatar URL</label><input type="text" id="editAvatar"></div>
+                <button type="submit" class="btn btn-success" style="width: 100%;">Änderungen speichern</button>
+            </form>
+        </div>
+    </div>
+
+    <footer><p>&copy; 2026 DSD I Masterclass. Alle Rechte vorbehalten.</p></footer>
+
+    <script>
+        function getDB() {
+            let db = JSON.parse(localStorage.getItem('dsd_db'));
+            if (!db || !db.users || !db.users.some(u => u.email === "samirdv888@gmail.com")) {
+                db = {
+                    users: [
+                        { name: "Samir", surname: "Admin", email: "samirdv888@gmail.com", pass: "Samir915900009", role: "admin", phone: "+992...", level: "Admin", avatar: "https://i.imgur.com/8Km9tLL.png" }
+                    ],
+                    codes: { "ADMIN-TEACHER-CODE": "teacher", "DSD-9A-2026": "student" },
+                    board: ["Herzlich willkommen, Samir! Plattform ist bereit."]
+                };
+                localStorage.setItem('dsd_db', JSON.stringify(db));
+            }
+            return db;
+        }
+
+        function saveDB(db) { localStorage.setItem('dsd_db', JSON.stringify(db)); }
+        let currentUser = JSON.parse(localStorage.getItem('dsd_current_user')) || null;
+
+        window.onload = function() { updateInterface(); renderBoard(); startCountdown(); }
+
+        function startCountdown() {
+            const examDate = new Date(new Date().getFullYear(), 4, 15, 9, 0, 0);
+            if (new Date() > examDate) examDate.setFullYear(examDate.getFullYear() + 1);
+            function updateTimer() {
+                const diff = examDate - new Date();
+                if (diff <= 0) { document.getElementById('examCountdown').innerText = "🎉 Heute ist Prüfungstag!"; return; }
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                document.getElementById('examCountdown').innerHTML = `⏳ Noch ${days} Tage, ${hours} Std. bis DSD I!`;
+            }
+            updateTimer();
+            setInterval(updateTimer, 60000);
+        }
+
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function switchTab(tab) {
+            document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
+            document.getElementById('registerForm').style.display = tab === 'login' ? 'none' : 'block';
+            let btns = document.getElementsByClassName('tab-btn');
+            btns[0].classList.toggle('active', tab === 'login');
+            btns[1].classList.toggle('active', tab !== 'login');
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            let db = getDB();
+            let email = document.getElementById('regEmail').value;
+            if (db.users.some(u => u.email === email)) { alert('E-Mail existiert bereits!'); return; }
+            let code = document.getElementById('regCode').value.trim();
+            let role = (code === 'admin' || code.startsWith('ADMIN')) ? 'admin' : (db.codes[code] || 'student');
+            if (!db.codes[code] && role !== 'admin') { alert('Ungültiger Code!'); return; }
+
+            let newUser = {
+                name: document.getElementById('regName').value,
+                surname: document.getElementById('regSurname').value,
+                phone: document.getElementById('regPhone').value,
+                email: email,
+                pass: document.getElementById('regPassword').value,
+                role: role, level: "A2", avatar: "https://cdn-icons-png.flaticon.com/512/847/847969.png"
+            };
+            db.users.push(newUser); saveDB(db);
+            currentUser = newUser; localStorage.setItem('dsd_current_user', JSON.stringify(currentUser));
+            closeModal('authModal'); updateInterface();
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            let db = getDB();
+            let user = db.users.find(u => u.email === document.getElementById('loginEmail').value && u.pass === document.getElementById('loginPassword').value);
+            if (!user) { alert('Falsche Anmeldedaten!'); return; }
+            currentUser = user; localStorage.setItem('dsd_current_user', JSON.stringify(currentUser));
+            closeModal('authModal'); updateInterface();
+        }
+
+        function logout() { currentUser = null; localStorage.removeItem('dsd_current_user'); updateInterface(); }
+
+        function createTeacherCode() {
+            let name = document.getElementById('teacherNameInput').value;
+            if (!name) return;
+            let code = 'TEACHER-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+            let db = getDB(); db.codes[code] = 'teacher'; saveDB(db);
+            alert(`Lehrer-Code erstellt: ${code}`); document.getElementById('teacherNameInput').value = '';
+        }
+
+        function createStudentCode() {
+            let group = document.getElementById('studentGroupNameInput').value;
+            if (!group) return;
+            let code = 'DSD-' + group.toUpperCase() + '-' + Math.floor(100 + Math.random() * 900);
+            let db = getDB(); db.codes[code] = 'student'; saveDB(db);
+            alert(`Schüler-Code erstellt: ${code}`); document.getElementById('studentGroupNameInput').value = '';
+        }
+
+        function postAnnouncement() {
+            let text = document.getElementById('newAnnouncement').value;
+            if (!text) return;
+            let db = getDB(); db.board.push(currentUser.name + ": " + text); saveDB(db);
+            document.getElementById('newAnnouncement').value = ''; renderBoard();
+        }
+
+        function renderBoard() {
+            let db = getDB();
+            document.getElementById('boardMessages').innerHTML = db.board.map(msg => `<div class="board-msg">${msg}</div>`).join('');
+        }
+
+        function checkQuiz(el, isCorrect) {
+            let res = document.getElementById('quizResult');
+            res.style.color = isCorrect ? 'var(--success)' : 'var(--danger)';
+            res.innerText = isCorrect ? 'Richtig! Ausgezeichnet.' : 'Leider falsch.';
+        }
+
+        function updateInterface() {
+            let authArea = document.getElementById('authArea');
+            let adminSec = document.getElementById('adminSection');
+            let teacherSec = document.getElementById('teacherSection');
+            let boardAdmin = document.getElementById('boardAdminControls');
+            let badge1 = document.getElementById('badge1');
+            let btnBook1 = document.getElementById('btnBook1');
+
+            if (currentUser) {
+                authArea.innerHTML = `<div style="display: flex; align-items: center; gap: 10px;"><span class="user-chip"><img src="${currentUser.avatar}" class="user-avatar">${currentUser.name}</span><button class="btn btn-secondary" onclick="logout()" style="padding: 6px 12px; font-size: 0.8rem;">Abmelden</button></div>`;
+                badge1.className = "badge free"; badge1.innerText = "Freigeschaltet";
+                btnBook1.className = "btn"; btnBook1.disabled = false; btnBook1.innerText = "Öffnen";
+                if (currentUser.role === 'admin') {
+                    adminSec.style.display = 'block'; teacherSec.style.display = 'block'; boardAdmin.style.display = 'flex'; renderAdminUsersTable();
+                } else if (currentUser.role === 'teacher') {
+                    teacherSec.style.display = 'block'; boardAdmin.style.display = 'flex';
+                }
+            } else {
+                authArea.innerHTML = `<button class="btn" onclick="openModal('authModal')">Anmelden</button>`;
+                adminSec.style.display = 'none'; teacherSec.style.display = 'none'; boardAdmin.style.display = 'none';
+                badge1.className = "badge locked"; badge1.innerText = "Nur für Schüler";
+                btnBook1.className = "btn btn-secondary"; btnBook1.disabled = true;
+            }
+        }
+
+        function renderAdminUsersTable() {
+            let db = getDB();
+            document.getElementById('adminUsersTableBody').innerHTML = db.users.map(u => `
+                <tr>
+                    <td><img src="${u.avatar || 'https://cdn-icons-png.flaticon.com/512/847/847969.png'}" width="32" height="32" style="border-radius:50%; object-fit:cover;"></td>
+                    <td><b>${u.name} ${u.surname}</b><br><small style="color:var(--text-muted);">${u.email}</small></td>
+                    <td><span style="background:#e0f2fe; color:#0369a1; padding:2px 8px; border-radius:6px; font-size:0.75rem; font-weight:700;">${u.role}</span></td>
+                    <td>${u.level || 'A2'}</td>
+                    <td><b>${u.phone}</b></td>
+                    <td><button class="btn" style="padding:4px 10px; font-size:0.75rem;" onclick="openEditUser('${u.email}')">Bearbeiten</button></td>
+                </tr>
+            `).join('');
+        }
+
+        function openEditUser(email) {
+            let u = getDB().users.find(item => item.email === email);
+            if (!u) return;
+            document.getElementById('editUserEmail').value = u.email;
+            document.getElementById('editName').value = u.name;
+            document.getElementById('editSurname').value = u.surname;
+            document.getElementById('editPhone').value = u.phone;
+            document.getElementById('editLevel').value = u.level || 'A2';
+            document.getElementById('editAvatar').value = u.avatar || '';
+            openModal('editUserModal');
+        }
+
+        function saveUserChanges(e) {
+            e.preventDefault();
+            let email = document.getElementById('editUserEmail').value;
+            let db = getDB();
+            let u = db.users.find(item => item.email === email);
+            if (u) {
+                u.name = document.getElementById('editName').value;
+                u.surname = document.getElementById('editSurname').value;
+                u.phone = document.getElementById('editPhone').value;
+                u.level = document.getElementById('editLevel').value;
+                u.avatar = document.getElementById('editAvatar').value || u.avatar;
+                saveDB(db); closeModal('editUserModal'); renderAdminUsersTable(); alert('Erfolgreich gespeichert!');
+            }
+        }
+    </script>
+</body>
+</html>
