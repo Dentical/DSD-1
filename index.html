@@ -93,7 +93,10 @@
             align-items: center;
             gap: 8px;
             color: var(--primary);
+            cursor: pointer;
+            transition: background 0.2s;
         }
+        .user-chip:hover { background: #e2e8f0; }
 
         .user-avatar {
             width: 28px;
@@ -222,6 +225,26 @@
         }
         .panel.teacher { border-left-color: var(--success); }
 
+        /* Flashcards стили */
+        .flashcard-box {
+            background: #f8fafc;
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            min-height: 160px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            margin-bottom: 15px;
+        }
+        .flashcard-box:hover { border-color: var(--primary-light); background: #f1f5f9; }
+        .flashcard-word { font-size: 1.6rem; font-weight: 800; color: var(--primary); margin-bottom: 5px; }
+        .flashcard-hint { font-size: 0.85rem; color: var(--text-muted); }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -306,7 +329,7 @@
         <nav>
             <a href="#board">Brett</a>
             <a href="#audioSection">Hörverstehen</a>
-            <a href="#redemittelSection">Redemittel</a>
+            <a href="#flashcardsSection">Vokabeln</a>
             <a href="#trainer">Trainer</a>
             <a href="#library">Materialien</a>
             <div id="authArea">
@@ -365,6 +388,20 @@
             </div>
         </div>
 
+        <!-- Новый блок: Интерактивные карточки слов (Flashcards) -->
+        <section id="flashcardsSection" class="panel" style="border-left-color: var(--accent);">
+            <h2 class="section-title">💡 Vokabel-Trainer (Flashcards)</h2>
+            <p style="margin-bottom: 15px; color: var(--text-muted);">Klicke auf die Karte, um die Übersetzung zu sehen.</p>
+            <div class="flashcard-box" onclick="flipCard()">
+                <div class="flashcard-word" id="cardWord">die Umwelt</div>
+                <div class="flashcard-hint" id="cardHint">(Klicke für Übersetzung)</div>
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button class="btn btn-secondary" onclick="prevCard()">⬅️ Zurück</button>
+                <button class="btn btn-success" onclick="nextCard()">Nächste Karte ➡️</button>
+            </div>
+        </section>
+
         <section id="audioSection">
             <h2 class="section-title">🎧 Hörverstehen (Prüfungstraining)</h2>
             <div class="grid">
@@ -387,11 +424,6 @@
                     </div>
                 </div>
             </div>
-        </section>
-
-        <section id="redemittelSection" class="panel" style="border-left-color: var(--accent);">
-            <h2 class="section-title">🗣️ Redemittel für die Mündliche Prüfung</h2>
-            <p>Nutze diese Phrasen für deine Präsentation.</p>
         </section>
 
         <section id="trainer" class="card" style="margin-bottom: 3rem;">
@@ -423,6 +455,7 @@
         </section>
     </main>
 
+    <!-- Модальное окно Авторизации -->
     <div id="authModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('authModal')">&times;</span>
@@ -431,15 +464,15 @@
                 <button class="tab-btn" onclick="switchTab('register')">Registrieren</button>
             </div>
             <form id="loginForm" onsubmit="handleLogin(event)">
-                <div class="form-group"><label>E-Mail</label><input type="email" id="loginEmail" value="samirdv888@gmail.com" required></div>
-                <div class="form-group"><label>Passwort</label><input type="password" id="loginPassword" value="Samir915900009" required></div>
+                <div class="form-group"><label>E-Mail</label><input type="email" id="loginEmail" required placeholder="name@example.com"></div>
+                <div class="form-group"><label>Passwort</label><input type="password" id="loginPassword" required placeholder="••••••••"></div>
                 <button type="submit" class="btn" style="width: 100%;">Einloggen</button>
             </form>
             <form id="registerForm" style="display: none;" onsubmit="handleRegister(event)">
                 <div class="form-group"><label>Vorname</label><input type="text" id="regName" required></div>
                 <div class="form-group"><label>Nachname</label><input type="text" id="regSurname" required></div>
                 <div class="form-group"><label>Telefonnummer</label><input type="tel" id="regPhone" required></div>
-                <div class="form-group"><label>Einladungscode</label><input type="text" id="regCode" required></div>
+                <div class="form-group"><label>Einladungscode</label><input type="text" id="regCode" required placeholder="z.B. DSD-9A-2026"></div>
                 <div class="form-group"><label>E-Mail</label><input type="email" id="regEmail" required></div>
                 <div class="form-group"><label>Passwort</label><input type="password" id="regPassword" required></div>
                 <button type="submit" class="btn btn-success" style="width: 100%;">Konto erstellen</button>
@@ -447,6 +480,25 @@
         </div>
     </div>
 
+    <!-- Новое модальное окно: Личный кабинет ученика -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('profileModal')">&times;</span>
+            <h2 style="font-size: 1.3rem; margin-bottom: 15px;">👤 Mein Profil</h2>
+            <form id="profileForm" onsubmit="saveProfileChanges(event)">
+                <div style="text-align: center; margin-bottom: 15px;">
+                    <img id="profileAvatarPreview" src="" width="70" height="70" style="border-radius: 50%; object-fit: cover; border: 2px solid var(--primary);">
+                </div>
+                <div class="form-group"><label>Vorname</label><input type="text" id="profileName" required></div>
+                <div class="form-group"><label>Nachname</label><input type="text" id="profileSurname" required></div>
+                <div class="form-group"><label>Avatar URL</label><input type="text" id="profileAvatar"></div>
+                <div class="form-group"><label>Dein Sprachniveau</label><input type="text" id="profileLevel" readonly style="background: #e2e8f0; cursor: not-allowed;"></div>
+                <button type="submit" class="btn btn-success" style="width: 100%;">Speichern</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно Администратора для редактирования пользователей -->
     <div id="editUserModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('editUserModal')">&times;</span>
@@ -480,8 +532,8 @@
                     users: [
                         { name: "Samir", surname: "Admin", email: "samirdv888@gmail.com", pass: "Samir915900009", role: "admin", phone: "+992...", level: "Admin", avatar: "https://i.imgur.com/8Km9tLL.png" }
                     ],
-                    codes: { "ADMIN-TEACHER-CODE": "teacher", "DSD-9A-2026": "student" },
-                    board: ["Herzlich willkommen, Samir! Plattform ist bereit."]
+                    codes: { "ADMIN-TEACHER-CODE": "teacher", "DSD-9A-2026": "student", "STUDENT": "student" },
+                    board: ["Herzlich willkommen! Plattform ist bereit."]
                 };
                 localStorage.setItem('dsd_db', JSON.stringify(db));
             }
@@ -492,6 +544,37 @@
         let currentUser = JSON.parse(localStorage.getItem('dsd_current_user')) || null;
 
         window.onload = function() { updateInterface(); renderBoard(); startCountdown(); }
+
+        // Логика Flashcards (Карточки слов)
+        const flashcards = [
+            { de: "die Umwelt", ru: "окружающая среда" },
+            { de: "nachhaltig", ru: "экологичный / устойчивый" },
+            { de: "die Herausforderung", ru: "вызов / сложная задача" },
+            { de: "verbessern", ru: "улучшать" },
+            { de: "die Meinungsfreiheit", ru: "свобода слова" }
+        ];
+        let currentCardIndex = 0;
+        let showTranslation = false;
+
+        function updateCardDisplay() {
+            let card = flashcards[currentCardIndex];
+            document.getElementById('cardWord').innerText = showTranslation ? card.ru : card.de;
+            document.getElementById('cardHint').innerText = showTranslation ? "(Перевод)" : "(Klicke für Übersetzung)";
+        }
+        function flipCard() {
+            showTranslation = !showTranslation;
+            updateCardDisplay();
+        }
+        function nextCard() {
+            showTranslation = false;
+            currentCardIndex = (currentCardIndex + 1) % flashcards.length;
+            updateCardDisplay();
+        }
+        function prevCard() {
+            showTranslation = false;
+            currentCardIndex = (currentCardIndex - 1 + flashcards.length) % flashcards.length;
+            updateCardDisplay();
+        }
 
         function startCountdown() {
             const examDate = new Date(new Date().getFullYear(), 4, 15, 9, 0, 0);
@@ -538,18 +621,49 @@
             db.users.push(newUser); saveDB(db);
             currentUser = newUser; localStorage.setItem('dsd_current_user', JSON.stringify(currentUser));
             closeModal('authModal'); updateInterface();
+            alert('Registrierung erfolgreich!');
         }
 
         function handleLogin(e) {
             e.preventDefault();
             let db = getDB();
-            let user = db.users.find(u => u.email === document.getElementById('loginEmail').value && u.pass === document.getElementById('loginPassword').value);
-            if (!user) { alert('Falsche Anmeldedaten!'); return; }
+            let emailInput = document.getElementById('loginEmail').value;
+            let passInput = document.getElementById('loginPassword').value;
+            let user = db.users.find(u => u.email === emailInput && u.pass === passInput);
+            if (!user) { alert('Falsche Anmeldedaten oder Konto existiert nicht!'); return; }
             currentUser = user; localStorage.setItem('dsd_current_user', JSON.stringify(currentUser));
             closeModal('authModal'); updateInterface();
         }
 
         function logout() { currentUser = null; localStorage.removeItem('dsd_current_user'); updateInterface(); }
+
+        // Открытие своего личного кабинета
+        function openProfile() {
+            if (!currentUser) return;
+            document.getElementById('profileName').value = currentUser.name;
+            document.getElementById('profileSurname').value = currentUser.surname;
+            document.getElementById('profileAvatar').value = currentUser.avatar || '';
+            document.getElementById('profileAvatarPreview').src = currentUser.avatar || 'https://cdn-icons-png.flaticon.com/512/847/847969.png';
+            document.getElementById('profileLevel').value = currentUser.level || 'A2';
+            openModal('profileModal');
+        }
+
+        function saveProfileChanges(e) {
+            e.preventDefault();
+            let db = getDB();
+            let u = db.users.find(item => item.email === currentUser.email);
+            if (u) {
+                u.name = document.getElementById('profileName').value;
+                u.surname = document.getElementById('profileSurname').value;
+                u.avatar = document.getElementById('profileAvatar').value || u.avatar;
+                saveDB(db);
+                currentUser = u;
+                localStorage.setItem('dsd_current_user', JSON.stringify(currentUser));
+                closeModal('profileModal');
+                updateInterface();
+                alert('Profil erfolgreich aktualisiert!');
+            }
+        }
 
         function createTeacherCode() {
             let name = document.getElementById('teacherNameInput').value;
@@ -594,7 +708,7 @@
             let btnBook1 = document.getElementById('btnBook1');
 
             if (currentUser) {
-                authArea.innerHTML = `<div style="display: flex; align-items: center; gap: 10px;"><span class="user-chip"><img src="${currentUser.avatar}" class="user-avatar">${currentUser.name}</span><button class="btn btn-secondary" onclick="logout()" style="padding: 6px 12px; font-size: 0.8rem;">Abmelden</button></div>`;
+                authArea.innerHTML = `<div style="display: flex; align-items: center; gap: 10px;"><span class="user-chip" onclick="openProfile()"><img src="${currentUser.avatar || 'https://cdn-icons-png.flaticon.com/512/847/847969.png'}" class="user-avatar">${currentUser.name}</span><button class="btn btn-secondary" onclick="logout()" style="padding: 6px 12px; font-size: 0.8rem;">Abmelden</button></div>`;
                 badge1.className = "badge free"; badge1.innerText = "Freigeschaltet";
                 btnBook1.className = "btn"; btnBook1.disabled = false; btnBook1.innerText = "Öffnen";
                 if (currentUser.role === 'admin') {
